@@ -45,10 +45,10 @@ class _TransactionUserState extends State<TransactionUser> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Comunicação direta (Passo os dados)
-        TransactionList(_transactions),
         // Comunicação Indireta (Passo uma função para pegar os dados)
         TransactionForm(_addTransaction),
+        // Comunicação direta (Passo os dados)
+        TransactionList(_transactions),
       ],
     );
   }
