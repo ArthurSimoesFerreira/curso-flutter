@@ -4,12 +4,13 @@ import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
-  const TransactionList(this.transactions, {super.key});
+  final void Function(String) onRemove;
+  const TransactionList(this.transactions, this.onRemove, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: 430,
       child: transactions.isEmpty
           ? Column(
               children: [
@@ -32,42 +33,41 @@ class TransactionList extends StatelessWidget {
               itemBuilder: (context, index) {
                 final tr = transactions[index];
                 return Card(
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2,
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          "R\$ ${tr.value.toStringAsFixed(2)}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(tr.title,
-                              style: Theme.of(context).textTheme.headline6),
-                          Text(
-                            DateFormat("d/MM/y").format(tr.date),
+                  elevation: 5,
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 5,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: FittedBox(
+                          child: Text(
+                            "R\$${tr.value}",
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                            ),
+                                fontFamily: "OpenSans",
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
-                        ],
+                        ),
                       ),
-                    ],
+                    ),
+                    title: Text(
+                      tr.title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(
+                      DateFormat("d MMM y").format(tr.date),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
+                      onPressed: (() => onRemove(tr.id)),
+                    ),
                   ),
                 );
               },

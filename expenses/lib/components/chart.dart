@@ -36,7 +36,7 @@ class Chart extends StatelessWidget {
         "day": DateFormat.E().format(weekDay)[0],
         "value": totalSum,
       };
-    });
+    }).reversed.toList();
   }
 
   double get _weekTotalValue {
@@ -66,7 +66,9 @@ class Chart extends StatelessWidget {
               child: ChartBar(
                 label: tr["day"].toString(),
                 value: double.tryParse(tr["value"].toString())!,
-                percentage: (tr["value"] as double) / _weekTotalValue,
+                percentage: _weekTotalValue == 0
+                    ? 0
+                    : (tr["value"] as double) / _weekTotalValue,
               ),
             );
           }).toList(),
