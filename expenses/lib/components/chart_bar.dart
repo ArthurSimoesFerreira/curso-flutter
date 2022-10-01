@@ -19,9 +19,9 @@ class ChartBar extends StatelessWidget {
         Container(
           height: 20,
           child: FittedBox(
-            fit: BoxFit.scaleDown,
+            //fit: BoxFit.scaleDown,
             child: Text(
-              "${value.toStringAsFixed(2)}",
+              value.toStringAsFixed(2),
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
