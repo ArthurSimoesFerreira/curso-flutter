@@ -10,21 +10,26 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return transactions.isEmpty
-        ? Column(
-            children: [
-              Text(
-                "Nenhuma Transação Cadastrada",
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: 200,
-                child: Image.asset(
-                  "assets\\images\\waiting.png",
-                  fit: BoxFit.cover,
-                ),
-              )
-            ],
+        ? LayoutBuilder(
+            builder: (ctx, constraints) {
+              return Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    "Nenhuma Transação Cadastrada",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  SizedBox(height: constraints.maxHeight * 0.05),
+                  Container(
+                    height: constraints.maxHeight * 0.6,
+                    child: Image.asset(
+                      "assets\\images\\waiting.png",
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                ],
+              );
+            },
           )
         : ListView.builder(
             itemCount: transactions.length,
@@ -44,7 +49,7 @@ class TransactionList extends StatelessWidget {
                       padding: const EdgeInsets.all(5),
                       child: FittedBox(
                         child: Text(
-                          "R\$${tr.value}",
+                          tr.value.toStringAsFixed(2),
                           style: const TextStyle(
                               fontFamily: "OpenSans",
                               fontWeight: FontWeight.bold,
@@ -61,11 +66,19 @@ class TransactionList extends StatelessWidget {
                     DateFormat("d MMM y").format(tr.date),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    color: Theme.of(context).errorColor,
-                    onPressed: (() => onRemove(tr.id)),
-                  ),
+                  trailing: MediaQuery.of(context).size.width > 450
+                      ? TextButton.icon(
+                          icon: const Icon(Icons.delete),
+                          label: Text("Excluir",
+                              style: TextStyle(
+                                  color: Theme.of(context).errorColor)),
+                          onPressed: (() => onRemove(tr.id)),
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.delete),
+                          color: Theme.of(context).errorColor,
+                          onPressed: (() => onRemove(tr.id)),
+                        ),
                 ),
               );
             },
