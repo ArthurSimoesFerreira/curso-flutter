@@ -109,19 +109,25 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     bool isLandscape = mediaQuery.orientation == Orientation.landscape;
+
+    final iconList = Platform.isIOS ? CupertinoIcons.square_list : Icons.list;
+    final chartList = Platform.isIOS
+        ? CupertinoIcons.chart_bar_alt_fill
+        : Icons.bar_chart_outlined;
+
     final actions = [
       if (isLandscape)
-        IconButton(
-          onPressed: () {
+        _getIconButton(
+          _showChart ? iconList : chartList,
+          () {
             setState(() {
               _showChart = !_showChart;
             });
           },
-          icon: Icon(_showChart ? Icons.list : Icons.bar_chart_outlined),
         ),
-      IconButton(
-        onPressed: () => _openTransactionFormModal(context),
-        icon: const Icon(Icons.add),
+      _getIconButton(
+        Platform.isIOS ? CupertinoIcons.add : Icons.add,
+        () => _openTransactionFormModal(context),
       ),
     ];
     final appBar =
@@ -132,40 +138,43 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar.preferredSize.height -
         mediaQuery.padding.top;
 
-    final bodyPage = SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          // if (isLandscape)
-          //   Row(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       Text("Exibir Gráfico"),
-          //       Switch.adaptive(
-          //         activeColor: Theme.of(context).colorScheme.secondary,
-          //         value: _showChart,
-          //         onChanged: (value) {
-          //           setState(() {
-          //             _showChart = value;
-          //           });
-          //         },
-          //       ),
-          //     ],
-          //   ),
-          if (_showChart || !isLandscape)
-            Container(
-              height: availableHeight * (isLandscape ? 0.8 : 0.3),
-              child: Chart(_recentTransactions),
-            ),
-          // Comunicação direta (Passo os dados)
-          if (!_showChart || !isLandscape)
-            Container(
-              height: availableHeight * (isLandscape ? 1 : 0.7),
-              child: TransactionList(_transactions, _deleteTransaction),
-            ),
-        ],
+    final bodyPage = SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // if (isLandscape)
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Text("Exibir Gráfico"),
+            //       Switch.adaptive(
+            //         activeColor: Theme.of(context).colorScheme.secondary,
+            //         value: _showChart,
+            //         onChanged: (value) {
+            //           setState(() {
+            //             _showChart = value;
+            //           });
+            //         },
+            //       ),
+            //     ],
+            //   ),
+            if (_showChart || !isLandscape)
+              Container(
+                height: availableHeight * (isLandscape ? 0.8 : 0.3),
+                child: Chart(_recentTransactions),
+              ),
+            // Comunicação direta (Passo os dados)
+            if (!_showChart || !isLandscape)
+              Container(
+                height: availableHeight * (isLandscape ? 1 : 0.7),
+                child: TransactionList(_transactions, _deleteTransaction),
+              ),
+          ],
+        ),
       ),
     );
+
     return Platform.isIOS
         ? CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
